@@ -4,6 +4,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Set up user account
 RUN useradd -ms /bin/bash ros && echo "ros:ros" | chpasswd && adduser ros sudo
 RUN adduser ros video
+RUN adduser ros audio
+
 # Builder dependencies installation
 RUN apt-get update \
     && apt-get install -qq -y --no-install-recommends \
@@ -44,6 +46,11 @@ RUN apt-get update \
     libgflags-dev \
     nlohmann-json3-dev \
     ros-humble-image-* \
+    espeak \
+    alsa-utils \
+    sox \
+    nano \
+    tmux \
     && rm -rf /var/lib/apt/lists/*
 RUN git clone https://github.com/YDLIDAR/YDLidar-SDK.git &&\
     mkdir -p YDLidar-SDK/build && \
@@ -82,4 +89,18 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES graphics,utility,compute
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
+# Execute any PIP installs
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install openai==0.27.8
+RUN python3 -m pip install tmule==1.5.9
+
+# Add scripts to the bashrc
 RUN echo "source /opt/ros/humble/setup.bash" >> /etc/bash.bashrc
+RUN echo "source /workspaces/limo_ros2/install/setup.bash" >> /etc/bash.bashrc
+RUN echo "echo 'LIMO ready for action!'" >> /etc/bash.bashrc
+RUN echo "echo 'Dont forget to run an sudo apt update when you first connect!'" >> /etc/bash.bashrc
+
+# 
+RUN source /opt/ros/humble/setup.bash
+RUN source /workspaces/limo_ros2/install/setup.bash
+RUN . /workspaces/limo_ros2/build.sh
