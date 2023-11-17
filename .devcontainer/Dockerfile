@@ -51,6 +51,8 @@ RUN apt-get update \
     sox \
     nano \
     tmux \
+    tree \
+    ros-humble-joy* \
     && rm -rf /var/lib/apt/lists/*
 RUN git clone https://github.com/YDLIDAR/YDLidar-SDK.git &&\
     mkdir -p YDLidar-SDK/build && \
@@ -100,7 +102,12 @@ RUN echo "source /workspaces/limo_ros2/install/setup.bash" >> /etc/bash.bashrc
 RUN echo "echo 'LIMO ready for action!'" >> /etc/bash.bashrc
 RUN echo "echo 'Dont forget to run an sudo apt update when you first connect!'" >> /etc/bash.bashrc
 
-# 
-RUN source /opt/ros/humble/setup.bash
-RUN source /workspaces/limo_ros2/install/setup.bash
-RUN . /workspaces/limo_ros2/build.sh
+# Add any conveniences to the .bashrc
+RUN echo "alias t='tmux'" >> /etc/bash.bashrc
+RUN echo "function gs () { git status . ; }" >> /etc/bash.bashrc
+RUN echo "function vm () { tmule -c /workspaces/limo_ros2/src/custom_packages/verbaliser/new_tmule/chat.tmule.yaml $1 ; }" >> /etc/bash.bashrc
+RUN echo "function tm () { tmule -c /workspaces/limo_ros2/src/custom_packages/verbaliser/new_tmule/chat.tmule.yaml $1 ; }" >> /etc/bash.bashrc
+
+# More functionality
+# RUN sudo apt update
+# RUN . /workspaces/limo_ros2/build.sh
