@@ -1,8 +1,9 @@
-FROM westonrobot/ros:humble-ci
+#FROM westonrobot/ros:humble-ci
+FROM westonrobot/limo_ros:humble_22082023
 
 ENV DEBIAN_FRONTEND=noninteractive
 # Set up user account
-RUN useradd -ms /bin/bash ros && echo "ros:ros" | chpasswd && adduser ros sudo
+#RUN useradd -ms /bin/bash ros && echo "ros:ros" | chpasswd && adduser ros sudo
 RUN adduser ros video
 RUN adduser ros audio
 
@@ -46,13 +47,6 @@ RUN apt-get update \
     libgflags-dev \
     nlohmann-json3-dev \
     ros-humble-image-* \
-    espeak \
-    alsa-utils \
-    sox \
-    nano \
-    tmux \
-    tree \
-    ros-humble-joy* \
     && rm -rf /var/lib/apt/lists/*
 RUN git clone https://github.com/YDLIDAR/YDLidar-SDK.git &&\
     mkdir -p YDLidar-SDK/build && \
@@ -91,23 +85,40 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES graphics,utility,compute
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
-# Execute any PIP installs
-RUN python3 -m pip install --upgrade pip
-RUN python3 -m pip install openai==0.27.8
-RUN python3 -m pip install tmule==1.5.9
-
 # Add scripts to the bashrc
 RUN echo "source /opt/ros/humble/setup.bash" >> /etc/bash.bashrc
 RUN echo "source /workspaces/limo_ros2/install/setup.bash" >> /etc/bash.bashrc
 RUN echo "echo 'LIMO ready for action!'" >> /etc/bash.bashrc
 RUN echo "echo 'Dont forget to run an sudo apt update when you first connect!'" >> /etc/bash.bashrc
+RUN apt-get update
+
+# Execute any PIP installs
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install tmule==1.5.9
+
+# Install development utilities
+RUN apt-get install -qq -y --no-install-recommends nano 
+RUN apt-get install -qq -y --no-install-recommends tmux
+RUN apt-get install -qq -y --no-install-recommends tree
+
+# PIP installs for custom_package: verbaliser
+RUN apt-get install -qq -y --no-install-recommends espeak
+RUN apt-get install -qq -y --no-install-recommends alsa-utils
+RUN apt-get install -qq -y --no-install-recommends sox
+RUN apt-get install -qq -y --no-install-recommends portaudio19-dev
+RUN apt-get install -qq -y --no-install-recommends flac
+RUN apt-get install -qq -y --no-install-recommends ros-humble-joy*
+RUN python3 -m pip install SpeechRecognition
+RUN python3 -m pip install PyAudio
+RUN python3 -m pip install openai==0.27.8
 
 # Add any conveniences to the .bashrc
 RUN echo "alias t='tmux'" >> /etc/bash.bashrc
 RUN echo "function gs () { git status . ; }" >> /etc/bash.bashrc
-RUN echo "function vm () { tmule -c /workspaces/limo_ros2/src/custom_packages/verbaliser/new_tmule/chat.tmule.yaml $1 ; }" >> /etc/bash.bashrc
-RUN echo "function tm () { tmule -c /workspaces/limo_ros2/src/custom_packages/verbaliser/new_tmule/chat.tmule.yaml $1 ; }" >> /etc/bash.bashrc
+RUN echo "function vm () { tmule -c /workspaces/limo_ros2/src/custom_packages/verbaliser/new_tmule/chat.tmule.yaml \$1 ; }" >> /etc/bash.bashrc
+RUN echo "function tm () { tmule -c /workspaces/limo_ros2/src/custom_packages/my_limo/tmule/talky.tmule.yaml \$1 ; }" >> /etc/bash.bashrc
+RUN echo "echo end" >> /etc/bash.bashrc
 
-# More functionality
+# Initial login required functionality
 # RUN sudo apt update
 # RUN . /workspaces/limo_ros2/build.sh

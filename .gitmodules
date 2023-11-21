@@ -4,9 +4,12 @@
 [submodule "src/custom_packages/verbaliser"]
 	path = src/custom_packages/verbaliser
 	url = https://github.com/iranaphor/verbaliser.git
-[submodule "src/custom_packages/src/custom_packages/environment_template"]
-	path = src/custom_packages/src/custom_packages/environment_template
+[submodule "src/custom_packages/environment_template"]
+	path = src/custom_packages/environment_template
 	url = https://github.com/lcas/environment_template.git
-[submodule "src/custom_packages/src/custom_packages/topological_navigation"]
-	path = src/custom_packages/src/custom_packages/topological_navigation
+[submodule "src/custom_packages/topological_navigation"]
+	path = src/custom_packages/topological_navigation
 	url = https://github.com/lcas/topological_navigation.git
+[submodule "src/custom_packages/my_limo"]
+	path = src/custom_packages/my_limo
+	url = http://github.com/Iranaphor/my_limo.git
