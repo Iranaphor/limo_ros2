@@ -10,6 +10,13 @@ def generate_launch_description():
     params_file = get_package_share_directory("astra_camera") + "/params/dabai_params.yaml"
     with open(params_file, 'r') as file:
         config_params = yaml.safe_load(file)
+    
+    camera_static_transform = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='base_link_to_camera',
+        arguments="0.084 0.0 0.030 0.0 0.0 0.0 /base_link /camera_link".split(" "))
+  
     container = ComposableNodeContainer(
         name='astra_camera_container',
         namespace='',
@@ -36,4 +43,5 @@ def generate_launch_description():
         ],
         output='screen'
     )
-    return LaunchDescription([container])
+    return LaunchDescription([container,
+                              camera_static_transform])

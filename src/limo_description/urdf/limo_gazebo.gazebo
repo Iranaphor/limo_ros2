@@ -37,10 +37,10 @@
               <ray>
                 <scan>
                   <horizontal>
-                    <samples>720</samples>
-                    <resolution>1</resolution>
-                    <min_angle>-2.09439504</min_angle>
-                    <max_angle>2.09439504</max_angle>
+                    <samples>292</samples>
+                    <resolution>1.000000</resolution>
+                    <min_angle>-2.0</min_angle>
+                    <max_angle>2.0</max_angle>
                   </horizontal>
                 </scan>
                 <range>
@@ -98,7 +98,6 @@
               <depthImageCameraInfoTopicName>/limo/depth/camera_info</depthImageCameraInfoTopicName>
               <pointCloudTopicName>/limo/depth/points</pointCloudTopicName>
               <frameName>depth_link</frameName>
-              <cameraname>depth_camera_link</cameraname>
               
               <pointCloudCutoff>0.5</pointCloudCutoff>
               <pointCloudCutoffMax>3.0</pointCloudCutoffMax>
