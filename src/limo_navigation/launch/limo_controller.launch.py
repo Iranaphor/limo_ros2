@@ -17,6 +17,7 @@ def generate_launch_description():
     
     namespace = LaunchConfiguration('namespace')
     use_sim_time = LaunchConfiguration('use_sim_time')
+    use_rviz = LaunchConfiguration('use_rviz')
     autostart = LaunchConfiguration('autostart')
     params_file = LaunchConfiguration('params_file')
     nav_to_pose_bt_xml = LaunchConfiguration('default_nav_to_pose_bt_xml')
@@ -82,6 +83,10 @@ def generate_launch_description():
     declare_use_lifecycle_mgr = DeclareLaunchArgument(
         'use_lifecycle_mgr', default_value='true',
         description='Whether to launch the lifecycle manager')
+    
+    declare_use_rviz = DeclareLaunchArgument(
+        'use_rviz', default_value='false',
+        description='Whether to launch RVIZ2')
   
     start_nav2_controller = Node(
         package='nav2_controller',
@@ -126,13 +131,14 @@ def generate_launch_description():
         condition=IfCondition(use_lifecycle_mgr),
         package='nav2_lifecycle_manager',
         executable='lifecycle_manager',
-        name='lifecycle_manager_coontroller',
+        name='lifecycle_manager_controller',
         output='screen',
         parameters=[{'use_sim_time': use_sim_time},
                     {'autostart': autostart},
                     {'node_names': lifecycle_nodes}])
 
     start_rviz2 = Node(
+        condition = IfCondition(use_rviz),
         package='rviz2',
         executable='rviz2',
         name='rviz2',
@@ -151,6 +157,7 @@ def generate_launch_description():
     ld.add_action(declare_namespace)
     ld.add_action(declare_params_file)
     ld.add_action(declare_use_lifecycle_mgr)
+    ld.add_action(declare_use_rviz)
 
     ld.add_action(start_bt_navigator)
     ld.add_action(start_nav2_controller)

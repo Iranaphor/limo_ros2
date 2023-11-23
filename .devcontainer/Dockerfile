@@ -112,12 +112,8 @@ RUN python3 -m pip install SpeechRecognition
 RUN python3 -m pip install PyAudio
 RUN python3 -m pip install openai==0.27.8
 
-# Add any conveniences to the .bashrc
-RUN echo "alias t='tmux'" >> /etc/bash.bashrc
-RUN echo "function gs () { git status . ; }" >> /etc/bash.bashrc
-RUN echo "function vm () { tmule -c /workspaces/limo_ros2/src/custom_packages/verbaliser/new_tmule/chat.tmule.yaml \$1 ; }" >> /etc/bash.bashrc
-RUN echo "function tm () { tmule -c /workspaces/limo_ros2/src/custom_packages/my_limo/tmule/talky.tmule.yaml \$1 ; }" >> /etc/bash.bashrc
-RUN echo "echo end" >> /etc/bash.bashrc
+# Install critics for nav2
+RUN apt-get install -qq -y --no-install-recommends ros-humble-dwb-critics
 
 # Initial login required functionality
 # RUN sudo apt update
