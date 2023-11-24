@@ -21,8 +21,8 @@ def generate_launch_description():
     autostart = LaunchConfiguration('autostart')
     params_file = LaunchConfiguration('params_file')
     nav_to_pose_bt_xml = LaunchConfiguration('default_nav_to_pose_bt_xml')
-    nav_through_poses_bt_xml = LaunchConfiguration('default_nav_to_pose_bt_xml')
-    use_lifecycle_mgr = LaunchConfiguration('use_lifecycle_mgr')
+    nav_through_poses_bt_xml = LaunchConfiguration('default_nav_through_poses_bt_xml')
+    use_lifecycle_mgr = LaunchConfiguration('use_lifecycle_mgr') 
 
     remappings = [((namespace, '/tf'), '/tf'),
                   ((namespace, '/tf_static'), '/tf_static'),
@@ -66,18 +66,19 @@ def generate_launch_description():
 
     declare_params_file = DeclareLaunchArgument(
         'params_file',
-        default_value=os.path.join(
-            bringup_dir, 'params', 'nav2_params.yaml'),
+        default_value=os.path.join(bringup_dir, 'params', 'nav2_params.yaml'),
         description='Full path to the ROS2 parameters file to use')
 
+    bt_tree_dir = os.path.join(bringup_dir,'params','bt_trees')
+    
     declare_nav_to_pose_bt_xml = DeclareLaunchArgument(
         'default_nav_to_pose_bt_xml',
-        default_value=os.path.join(bringup_dir,'params','navigate_w_replanning_and_recovery.xml'),
+        default_value=os.path.join(bt_tree_dir, 'navigate_to_pose_w_replanning_and_recovery.xml'),
         description='Full path to nav to pose behavior tree parameter files')
 
     declare_nav_through_poses_bt_xml = DeclareLaunchArgument(
         'default_nav_through_poses_bt_xml',
-        default_value=os.path.join(bringup_dir,'params','navigate_w_replanning_and_recovery.xml'),
+        default_value=os.path.join(bt_tree_dir, 'navigate_through_poses_w_replanning_and_recovery.xml'),
         description='Full path to nav to pose behavior tree parameter files')
 
     declare_use_lifecycle_mgr = DeclareLaunchArgument(

@@ -107,13 +107,17 @@ RUN apt-get install -qq -y --no-install-recommends alsa-utils
 RUN apt-get install -qq -y --no-install-recommends sox
 RUN apt-get install -qq -y --no-install-recommends portaudio19-dev
 RUN apt-get install -qq -y --no-install-recommends flac
-RUN apt-get install -qq -y --no-install-recommends ros-humble-joy*
 RUN python3 -m pip install SpeechRecognition
 RUN python3 -m pip install PyAudio
 RUN python3 -m pip install openai==0.27.8
 
 # Install critics for nav2
-RUN apt-get install -qq -y --no-install-recommends ros-humble-dwb-critics
+RUN apt-get update
+RUN apt-get install -qq -y --no-install-recommends ros-humble-joy*
+RUN apt-get install -qq -y --no-install-recommends ros-humble-teleop-twist-joy
+RUN apt-get install -qq -y --no-install-recommends ros-humble-dwb-critics --fix-missing
+
+RUN echo "source /workspaces/limo_ros2/src/custom_packages/my_limo/bash/local_bashrc.sh" >> /etc/bash.bashrc
 
 # Initial login required functionality
 # RUN sudo apt update
