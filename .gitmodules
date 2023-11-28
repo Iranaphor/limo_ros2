@@ -13,3 +13,7 @@
 [submodule "src/custom_packages/my_limo"]
 	path = src/custom_packages/my_limo
 	url = http://github.com/Iranaphor/my_limo.git
+[submodule "src/custom_packages/environment_common"]
+	path = src/custom_packages/environment_common
+	url = https://github.com/LCAS/environment_common.git
+	branch = tmap_detailing
