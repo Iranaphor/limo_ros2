@@ -299,3 +299,4 @@ dmypy.json
 cython_debug/
 
 !src/**
+**/rosbag2*/
