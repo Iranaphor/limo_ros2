@@ -117,6 +117,9 @@ RUN apt-get install -qq -y --no-install-recommends ros-humble-joy*
 RUN apt-get install -qq -y --no-install-recommends ros-humble-teleop-twist-joy
 RUN apt-get install -qq -y --no-install-recommends ros-humble-dwb*
 
+# Installs for vrviz
+RUN apt-get update
+RUN apt-get install -qq -y --no-install-recommends mosquitto
 
 # PIP installs for custom_package: my_limo mqtt publishing
 RUN python3 -m pip install msgpack

@@ -17,3 +17,6 @@
 	path = src/custom_packages/environment_common
 	url = https://github.com/LCAS/environment_common.git
 	branch = tmap_detailing
+[submodule "src/custom_packages/vrviz"]
+	path = src/custom_packages/vrviz
+	url = https://github.com/Iranaphor/vrviz_ros.git
