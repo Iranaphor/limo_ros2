@@ -26,3 +26,7 @@
 [submodule "src/custom_packages/vrviz"]
 	path = src/custom_packages/vrviz
 	url = https://github.com/Iranaphor/vrviz_ros.git
+
+[submodule "src/custom_packages/staggered_duckling_platooning"]
+	path = src/custom_packages/staggered_duckling_platooning
+	url = https://github.com/Iranaphor/staggered_duckling_platooning
