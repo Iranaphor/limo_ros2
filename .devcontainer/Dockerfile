@@ -101,6 +101,10 @@ RUN apt-get install -qq -y --no-install-recommends nano
 RUN apt-get install -qq -y --no-install-recommends tmux
 RUN apt-get install -qq -y --no-install-recommends tree
 
+# Install network moonitoring utilities
+RUN apt-get install -qq -y --no-install-recommends net-tools
+RUN apt-get install -qq -y --no-install-recommends iputils-ping
+
 # PIP installs for custom_package: verbaliser
 RUN apt-get install -qq -y --no-install-recommends espeak
 RUN apt-get install -qq -y --no-install-recommends alsa-utils
@@ -130,5 +134,5 @@ RUN sed -i 's/\#force_color_prompt=yes/force_color_prompt=yes/g' /home/ros/.bash
 RUN echo "source /workspaces/limo_ros2/src/custom_packages/my_limo/bash/local_bashrc.sh" >> /home/ros/.bashrc
 
 # Initial login required functionality
-RUN sudo apt update
-RUN . /workspaces/limo_ros2/build.sh
+#RUN sudo apt update
+#RUN . /workspaces/limo_ros2/build.sh
