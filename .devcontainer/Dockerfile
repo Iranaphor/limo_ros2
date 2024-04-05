@@ -86,10 +86,10 @@ ENV NVIDIA_DRIVER_CAPABILITIES graphics,utility,compute
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 # Add scripts to the bashrc
-RUN echo "source /opt/ros/humble/setup.bash" >> /etc/bash.bashrc
-RUN echo "source /workspaces/limo_ros2/install/setup.bash" >> /etc/bash.bashrc
-RUN echo "echo 'LIMO ready for action!'" >> /etc/bash.bashrc
-RUN echo "echo 'Dont forget to run an sudo apt update when you first connect!'" >> /etc/bash.bashrc
+RUN echo "source /opt/ros/humble/setup.bash" >> /home/ros/.bashrc
+RUN echo "source /workspaces/limo_ros2/install/setup.bash" >> /home/ros/.bashrc
+RUN echo "echo 'LIMO ready for action!'" >> /home/ros/.bashrc
+RUN echo "echo 'Dont forget to run an sudo apt update when you first connect!'" >> /home/ros/.bashrc
 RUN apt-get update
 
 # Execute any PIP installs
@@ -125,8 +125,10 @@ RUN apt-get install -qq -y --no-install-recommends mosquitto
 RUN python3 -m pip install msgpack
 RUN python3 -m pip install paho-mqtt
 
-RUN echo "source /workspaces/limo_ros2/src/custom_packages/my_limo/bash/local_bashrc.sh" >> /etc/bash.bashrc
+# Setup working shell
+RUN sed -i 's/\#force_color_prompt=yes/force_color_prompt=yes/g' /home/ros/.bashrc
+RUN echo "source /workspaces/limo_ros2/src/custom_packages/my_limo/bash/local_bashrc.sh" >> /home/ros/.bashrc
 
 # Initial login required functionality
-# RUN sudo apt update
-# RUN . /workspaces/limo_ros2/build.sh
+RUN sudo apt update
+RUN . /workspaces/limo_ros2/build.sh
