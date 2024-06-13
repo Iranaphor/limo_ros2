@@ -120,6 +120,12 @@ RUN apt-get update
 RUN apt-get install -qq -y --no-install-recommends ros-humble-joy*
 RUN apt-get install -qq -y --no-install-recommends ros-humble-teleop-twist-joy
 RUN apt-get install -qq -y --no-install-recommends ros-humble-dwb*
+RUN apt-get install -qq -y --no-install-recommends ros-humble-nav2*
+RUN apt-get install -qq -y --no-install-recommends --upgrade ros-humble-*ehaviortre*
+# ros-humble-behaviortree-cpp-dbgsym/jammy,now 4.5.1-2jammy.20240219.085211 arm64 [installed]
+# ros-humble-behaviortree-cpp-v3-dbgsym/jammy,now 3.8.6-1jammy.20240219.085242 arm64 [installed]
+# ros-humble-behaviortree-cpp-v3/jammy,now 3.8.6-1jammy.20240219.085242 arm64 [installed]
+# ros-humble-behaviortree-cpp/jammy,now 4.5.1-2jammy.20240219.085211 arm64 [installed]
 
 # Installs for vrviz
 RUN apt-get update
