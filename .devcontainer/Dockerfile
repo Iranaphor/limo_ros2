@@ -138,6 +138,7 @@ RUN python3 -m pip install paho-mqtt
 # Setup working shell
 RUN sed -i 's/\#force_color_prompt=yes/force_color_prompt=yes/g' /home/ros/.bashrc
 RUN echo "source /workspaces/limo_ros2/src/custom_packages/my_limo/bash/local_bashrc.sh" >> /home/ros/.bashrc
+RUN echo "" >> /home/ros/.bashrc
 
 # Initial login required functionality
 #RUN sudo apt update

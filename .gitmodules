@@ -30,3 +30,6 @@
 [submodule "src/custom_packages/staggered_duckling_platooning"]
 	path = src/custom_packages/staggered_duckling_platooning
 	url = https://github.com/Iranaphor/staggered_duckling_platooning
+[submodule "src/custom_packages/stag_ros2"]
+	path = src/custom_packages/stag_ros2
+	url = https://github.com/Iranaphor/stag_ros2
