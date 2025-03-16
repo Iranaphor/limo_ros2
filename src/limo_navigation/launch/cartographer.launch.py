@@ -1,25 +1,9 @@
-# Copyright 2019 Open Source Robotics Foundation, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# Author: Darby Lim
-
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, TimerAction
 from launch_ros.actions import Node
-from launch.substitutions import LaunchConfiguration, Command
+from launch.substitutions import LaunchConfiguration
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import ThisLaunchFileDir
@@ -27,56 +11,26 @@ from launch.substitutions import ThisLaunchFileDir
 
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
-    limo_cartographer_prefix = get_package_share_directory('limo_navigation')
-    cartographer_config_dir = LaunchConfiguration('cartographer_config_dir', default=os.path.join(
-                                                  limo_cartographer_prefix, 'params'))
-    configuration_basename = LaunchConfiguration('configuration_basename',
-                                                 default='limo_lds_2d.lua')
-
-    resolution = LaunchConfiguration('resolution', default='0.05')
-    publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
-
-    rviz_config_dir = os.path.join(get_package_share_directory('limo_navigation'),
-                                   'rviz', 'limo_navigation.rviz')
+    limo_navigation_prefix = get_package_share_directory('limo_navigation')
+    rviz_config_dir = os.path.join(get_package_share_directory('limo_navigation'), 'rviz', 'limo_navigation.rviz')
+    map_yaml_file = LaunchConfiguration('map_yaml_file', default=os.path.join(limo_navigation_prefix, 'maps', 'map.yaml'))
+    initial_pose = LaunchConfiguration('initial_pose', default='[0.0, 0.0, 0.0]')
 
     return LaunchDescription([
         DeclareLaunchArgument(
-            'cartographer_config_dir',
-            default_value=cartographer_config_dir,
-            description='Full path to config file to load'),
-        DeclareLaunchArgument(
-            'configuration_basename',
-            default_value=configuration_basename,
-            description='Name of lua file for cartographer'),
-        DeclareLaunchArgument(
             'use_sim_time',
             default_value='false',
-            description='Use simulation (Gazebo) clock if true'),
-            
-        Node(
-            package='cartographer_ros',
-            executable='cartographer_node',
-            name='cartographer_node',
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time}],
-            arguments=['-configuration_directory', cartographer_config_dir,
-                       '-configuration_basename', configuration_basename],
-            # remappings=[('/imu', '/imu/data')],
-            ),
+            description='Use simulation (Gazebo) clock if true'
+        ),
         DeclareLaunchArgument(
-            'resolution',
-            default_value=resolution,
-            description='Resolution of a grid cell in the published occupancy grid'),
-
+            'map_yaml_file',
+            default_value=map_yaml_file,
+            description='Full path to the map yaml file to load'
+        ),
         DeclareLaunchArgument(
-            'publish_period_sec',
-            default_value=publish_period_sec,
-            description='OccupancyGrid publishing period'),
-
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/occupancy_grid.launch.py']),
-            launch_arguments={'use_sim_time': use_sim_time, 'resolution': resolution,
-                              'publish_period_sec': publish_period_sec}.items(),
+            'initial_pose',
+            default_value='[0.0, 0.0, 0.0]',
+            description='Initial pose to start from [x, y, theta]'
         ),
         Node(
             package='rviz2',
@@ -84,5 +38,48 @@ def generate_launch_description():
             name='rviz2',
             arguments=['-d', rviz_config_dir],
             parameters=[{'use_sim_time': use_sim_time}],
-            output='screen'),
+            output='screen'
+        ),
+        Node(
+            package='nav2_map_server',
+            executable='map_server',
+            name='map_server',
+            output='screen',
+            parameters=[{'use_sim_time': use_sim_time, 'yaml_filename': map_yaml_file}],
+            remappings=[('/map', '/map')]
+        ),
+        TimerAction(
+            period=5.0,
+            actions=[
+                Node(
+                    package='nav2_amcl',
+                    executable='amcl',
+                    name='amcl',
+                    output='screen',
+                    parameters=[
+                        {'use_sim_time': use_sim_time},
+                        {'yaml_filename': map_yaml_file}
+                    ],
+                    remappings=[('/scan', 'scan'), ('/map', '/map')]
+                )
+            ]
+        ),
+        TimerAction(
+            period=10.0,
+            actions=[
+                Node(
+                    package='slam_toolbox',
+                    executable='async_slam_toolbox_node',
+                    name='slam_toolbox',
+                    output='screen',
+                    parameters=[
+                        {'use_sim_time': use_sim_time},
+                        {'mode': 'localization'},
+                        {'map_start_pose': initial_pose},
+                        {'use_map_saver': True}
+                    ],
+                    remappings=[('/tf', 'tf'), ('/tf_static', 'tf_static'), ('/scan', 'scan'), ('/map', '/map')]
+                )
+            ]
+        )
     ])
